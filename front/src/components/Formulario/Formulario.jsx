@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import "./Formulario.css"
 
 export default function Formulario() {
-  const [idPlanta, setIdPlanta] = useState(1);
+  const [idPlanta, setIdPlanta] = useState("");
   const [tipoRiego, setTipoRiego] = useState(1);
-  const [alturaCrecimiento, setAlturaCrecimiento] = useState(0);
-  const [tempAmbiente, setTempAmbiente] = useState(0);
-  const [caudalAgua, setCaudalAgua] = useState(0);
+  const [alturaCrecimiento, setAlturaCrecimiento] = useState("");
+  const [tempAmbiente, setTempAmbiente] = useState("");
+  const [caudalAgua, setCaudalAgua] = useState("");
   const [observaciones, setObservaciones] = useState("");
   const [plantas, setPlantas] = useState([]);
 
@@ -23,6 +23,9 @@ export default function Formulario() {
   }, []);
 
   const handleEnviarDatos = () => {
+    if (idPlanta !== "") {
+
+   
     const datosPlanta = {
       idPlanta,
       tipoRiego,
@@ -31,6 +34,7 @@ export default function Formulario() {
       caudalAgua,
       observaciones,
     };
+
 
     fetch("http://localhost:3000/api/subir-datos-planta", {
       method: "POST",
@@ -42,17 +46,28 @@ export default function Formulario() {
       .then((response) => response.json())
       .then((data) => {
         console.log("Respuesta de la API:", data);
+        // Limpiar los campos después de enviar los datos
+        setIdPlanta("");
+        setTipoRiego(1); // Valor por defecto
+        setAlturaCrecimiento("");
+        setTempAmbiente("");
+        setCaudalAgua("");
+        setObservaciones("");
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+      } else {
+        alert("Ingrese la ID de la Planta")
+      }
   };
 
   return (
     <div className="Formulario-container">
       <div className="input">
         <span>Planta</span>
-        <select onChange={(event) => setIdPlanta(event.target.value)}>
+        <select value={idPlanta} onChange={(event) => setIdPlanta(event.target.value)}>
+          <option value="">Selecciona una planta</option>
           {plantas.map((planta) => (
             <option key={planta.id_planta} value={planta.id_planta}>
               {planta.alumno_asignado}
@@ -63,7 +78,7 @@ export default function Formulario() {
 
       <div className="input">
         <span>Tipo de riego</span>
-        <select onChange={(event) => setTipoRiego(event.target.value)}>
+        <select value={tipoRiego} onChange={(event) => setTipoRiego(event.target.value)}>
           <option value="1">Aspersión</option>
           <option value="2">Goteo</option>
           <option value="3">Microaspersión</option>
@@ -74,6 +89,7 @@ export default function Formulario() {
         <span>Altura de crecimiento</span>
         <input
           type="number"
+          value={alturaCrecimiento}
           placeholder="En centímetros"
           onChange={(event) => setAlturaCrecimiento(event.target.value)}
         />
@@ -83,6 +99,7 @@ export default function Formulario() {
         <span>Temperatura ambiente</span>
         <input
           type="number"
+          value={tempAmbiente}
           placeholder="En grados celsius"
           onChange={(event) => setTempAmbiente(event.target.value)}
         />
@@ -92,6 +109,7 @@ export default function Formulario() {
         <span>Caudal de agua</span>
         <input
           type="number"
+          value={caudalAgua}
           placeholder="En ml/h"
           onChange={(event) => setCaudalAgua(event.target.value)}
         />
@@ -101,6 +119,7 @@ export default function Formulario() {
         <span>Observaciones (opcional)</span>
         <input
           type="text"
+          value={observaciones}
           onChange={(event) => setObservaciones(event.target.value)}
         />
       </div>
