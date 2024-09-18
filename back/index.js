@@ -43,6 +43,19 @@ app.post('/api/subir-datos-planta', (req, res) => {
   });
 });
 
+app.get('/api/plantas', (req, res) => {
+  const query = 'SELECT id_planta, alumno_asignado FROM plantas';
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error('Error obteniendo las plantas:', error);
+      res.status(500).json({ mensaje: 'Error obteniendo las plantas' });
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en el puerto ${port}`);
