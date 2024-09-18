@@ -16,6 +16,58 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `fotos`
+--
+
+DROP TABLE IF EXISTS `fotos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fotos` (
+  `id_foto` int NOT NULL,
+  `id_registro` int NOT NULL,
+  `url_foto` varchar(150) NOT NULL,
+  PRIMARY KEY (`id_foto`),
+  UNIQUE KEY `url_foto_UNIQUE` (`url_foto`),
+  KEY `fk_id_registro_idx` (`id_registro`),
+  CONSTRAINT `fk_id_registro` FOREIGN KEY (`id_registro`) REFERENCES `registros` (`id_registro`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fotos`
+--
+
+LOCK TABLES `fotos` WRITE;
+/*!40000 ALTER TABLE `fotos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `fotos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `plantas`
+--
+
+DROP TABLE IF EXISTS `plantas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `plantas` (
+  `id_planta` int NOT NULL AUTO_INCREMENT,
+  `alumno_asignado` varchar(50) NOT NULL,
+  PRIMARY KEY (`id_planta`),
+  UNIQUE KEY `alumno_asignado_UNIQUE` (`alumno_asignado`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `plantas`
+--
+
+LOCK TABLES `plantas` WRITE;
+/*!40000 ALTER TABLE `plantas` DISABLE KEYS */;
+INSERT INTO `plantas` VALUES (1,'Gómez, Alejandro'),(2,'Llabot, Kevin');
+/*!40000 ALTER TABLE `plantas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `registros`
 --
 
@@ -49,6 +101,31 @@ LOCK TABLES `registros` WRITE;
 INSERT INTO `registros` VALUES (1,1,8,30,'Las hojas son amarillas','2024-09-11','02:32:48',2,50),(2,1,9.3,35,'Las hojas apenas crecieron','2024-09-11','02:35:11',2,50),(3,2,12,35,'Las hojas son verdes','2024-09-11','02:36:13',1,80),(4,1,10,30,'Las hojas se alargaron más de lo normal','2024-09-11','18:10:29',2,50),(5,1,20,30,'El tallo se oscureció','2024-09-11','18:13:15',1,120),(6,1,20,30,'El tallo se oscureció','2024-09-11','18:13:19',1,120),(7,2,15,34,'La planta apenas cambió, salvo en su tamaño','2024-09-11','18:18:11',2,100),(8,2,16,33,'Las hojas volvieron a su color original','2024-09-11','18:19:40',2,100);
 /*!40000 ALTER TABLE `registros` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `tipo_riego`
+--
+
+DROP TABLE IF EXISTS `tipo_riego`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tipo_riego` (
+  `id_tipo_riego` int NOT NULL AUTO_INCREMENT,
+  `tipo_riego` varchar(25) NOT NULL,
+  PRIMARY KEY (`id_tipo_riego`),
+  UNIQUE KEY `tipo_riego_UNIQUE` (`tipo_riego`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tipo_riego`
+--
+
+LOCK TABLES `tipo_riego` WRITE;
+/*!40000 ALTER TABLE `tipo_riego` DISABLE KEYS */;
+INSERT INTO `tipo_riego` VALUES (1,'Aspersión'),(2,'Goteo'),(3,'Microaspersión');
+/*!40000 ALTER TABLE `tipo_riego` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -59,4 +136,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-11 18:52:26
+-- Dump completed on 2024-09-18  0:55:17
