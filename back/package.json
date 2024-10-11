@@ -1,17 +1,17 @@
 {
   "name": "back",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node --env-file=.env --watch index.js"
   },
-  "author": "Alejandro",
+  "author": "Gómez, Alejandro",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.20.0",
-    "mysql2": "^3.11.2"
+    "express": "^4.21.1",
+    "mysql2": "^3.11.3"
   }
 }

@@ -12,7 +12,7 @@ export default function Formulario() {
 
   // useEffect para obtener las plantas cuando el componente se monte
   useEffect(() => {
-    fetch("http://localhost:3000/api/plantas")
+    fetch("http://localhost:3000/plantas")
       .then((response) => response.json())
       .then((data) => {
         setPlantas(data);  // Guardar las plantas en el estado
@@ -36,7 +36,7 @@ export default function Formulario() {
     };
 
 
-    fetch("http://localhost:3000/api/subir-datos-planta", {
+    fetch("http://localhost:3000/plantas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,9 +46,8 @@ export default function Formulario() {
       .then((response) => response.json())
       .then((data) => {
         console.log("Respuesta de la API:", data);
-        // Limpiar los campos después de enviar los datos
         setIdPlanta("");
-        setTipoRiego(1); // Valor por defecto
+        setTipoRiego(1);
         setAlturaCrecimiento("");
         setTempAmbiente("");
         setCaudalAgua("");
