@@ -1,42 +1,76 @@
 import { useState, useEffect } from "react";
-import "./Formulario.css"
+import "./Formulario.css";
 
 export default function Formulario() {
   const [idPlanta, setIdPlanta] = useState("");
-  const [tipoRiego, setTipoRiego] = useState(1);
   const [alturaCrecimiento, setAlturaCrecimiento] = useState("");
   const [tempAmbiente, setTempAmbiente] = useState("");
   const [caudalAgua, setCaudalAgua] = useState("");
+  const [ph, setPh] = useState("");
+  const [humedad, setHumedad] = useState("");
   const [observaciones, setObservaciones] = useState("");
   const [plantas, setPlantas] = useState([]);
+  const [mensaje, setMensaje] = useState(null);
+  const [errores, setErrores] = useState({});
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
-  // useEffect para obtener las plantas cuando el componente se monte
   useEffect(() => {
-    fetch("http://localhost:3000/plantas")
+    fetch("http://192.168.1.16:3000/plantas")
       .then((response) => response.json())
       .then((data) => {
-        setPlantas(data);  // Guardar las plantas en el estado
+        setPlantas(data);
       })
       .catch((error) => {
         console.error("Error obteniendo las plantas:", error);
       });
   }, []);
 
-  const handleEnviarDatos = () => {
-    if (idPlanta !== "") {
+  const validarFormulario = () => {
+    const nuevosErrores = {};
 
-   
+    if (!idPlanta) {
+      nuevosErrores.idPlanta = "Debe seleccionar una planta.";
+    }
+    if (!alturaCrecimiento || alturaCrecimiento <= 0) {
+      nuevosErrores.alturaCrecimiento = "Ingrese una altura válida (mayor a 0).";
+    }
+    if (!tempAmbiente || tempAmbiente < -10 || tempAmbiente > 50) {
+      nuevosErrores.tempAmbiente = "Debe estar entre -10°C y 50°C.";
+    }
+    if (!caudalAgua || caudalAgua <= 0) {
+      nuevosErrores.caudalAgua = "Debe ser mayor a 0 ml/h.";
+    }
+    if (!ph || ph < 0 || ph > 14) {
+      nuevosErrores.ph = "Debe estar entre 0 y 14.";
+    }
+    if (!humedad || humedad < 0 || humedad > 100) {
+      nuevosErrores.humedad = "Debe estar entre 0% y 100%.";
+    }
+
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
+  };
+
+  const handleConfirmarEnvio = () => {
+    if (validarFormulario()) {
+      setMostrarConfirmacion(true); // Mostrar el modal si la validación es exitosa
+    } else {
+      setMensaje("Hay errores en el formulario.");
+    }
+  };
+
+  const handleEnviarDatos = () => {
     const datosPlanta = {
       idPlanta,
-      tipoRiego,
       alturaCrecimiento,
       tempAmbiente,
       caudalAgua,
+      ph,
+      humedad,
       observaciones,
     };
 
-
-    fetch("http://localhost:3000/plantas", {
+    fetch("http://192.168.1.16:3000/plantas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,84 +80,108 @@ export default function Formulario() {
       .then((response) => response.json())
       .then((data) => {
         console.log("Respuesta de la API:", data);
+        setMensaje("Datos enviados exitosamente");
         setIdPlanta("");
-        setTipoRiego(1);
         setAlturaCrecimiento("");
         setTempAmbiente("");
         setCaudalAgua("");
+        setPh("");
+        setHumedad("");
         setObservaciones("");
+        setMostrarConfirmacion(false);
       })
       .catch((error) => {
         console.error("Error:", error);
+        setMensaje("Error al enviar los datos");
       });
-      } else {
-        alert("Ingrese la ID de la Planta")
-      }
+  };
+
+  const handleCancelarEnvio = () => {
+    setMostrarConfirmacion(false);
   };
 
   return (
-    <div className="Formulario-container">
-      <div className="input">
-        <span>Planta</span>
+    <div className="contact-form">
+      <span className="heading">Formulario de registros</span>
+
+      <form>
+        <label htmlFor="idPlanta">Planta: {errores.idPlanta && <p className="error">{errores.idPlanta}</p>}</label>
         <select value={idPlanta} onChange={(event) => setIdPlanta(event.target.value)}>
-          <option value="">Selecciona una planta</option>
+          <option value="" disabled defaultValue={""}>Seleccione una planta</option>
           {plantas.map((planta) => (
             <option key={planta.id_planta} value={planta.id_planta}>
               {planta.alumno_asignado}
             </option>
           ))}
         </select>
-      </div>
 
-      <div className="input">
-        <span>Tipo de riego</span>
-        <select value={tipoRiego} onChange={(event) => setTipoRiego(event.target.value)}>
-          <option value="1">Aspersión</option>
-          <option value="2">Goteo</option>
-          <option value="3">Microaspersión</option>
-        </select>
-      </div>
-
-      <div className="input">
-        <span>Altura de crecimiento</span>
+        <label htmlFor="alturaCrecimiento">Altura de crecimiento: {errores.alturaCrecimiento && <p className="error">{errores.alturaCrecimiento}</p>}</label>
         <input
           type="number"
           value={alturaCrecimiento}
           placeholder="En centímetros"
           onChange={(event) => setAlturaCrecimiento(event.target.value)}
         />
-      </div>
 
-      <div className="input">
-        <span>Temperatura ambiente</span>
+        <label htmlFor="tempAmbiente">Temperatura ambiente: {errores.tempAmbiente && <p className="error">{errores.tempAmbiente}</p>}</label>
         <input
           type="number"
           value={tempAmbiente}
           placeholder="En grados celsius"
           onChange={(event) => setTempAmbiente(event.target.value)}
         />
-      </div>
 
-      <div className="input">
-        <span>Caudal de agua</span>
+        <label htmlFor="caudalAgua">Caudal de agua: {errores.caudalAgua && <p className="error">{errores.caudalAgua}</p>}</label>
         <input
           type="number"
           value={caudalAgua}
           placeholder="En ml/h"
           onChange={(event) => setCaudalAgua(event.target.value)}
         />
-      </div>
 
-      <div className="input">
-        <span>Observaciones (opcional)</span>
+        <label htmlFor="ph">pH: {errores.ph && <p className="error">{errores.ph}</p>}</label>
         <input
-          type="text"
+          type="number"
+          value={ph}
+          placeholder="Ingrese el pH"
+          onChange={(event) => setPh(event.target.value)}
+        />
+
+        <label htmlFor="humedad">Humedad (%): {errores.humedad && <p className="error">{errores.humedad}</p>}</label>
+        <input
+          type="number"
+          value={humedad}
+          placeholder="Ingrese la humedad del suelo"
+          onChange={(event) => setHumedad(event.target.value)}
+        />
+
+        <label htmlFor="observaciones">Observaciones (opcional):</label>
+        <textarea
           value={observaciones}
           onChange={(event) => setObservaciones(event.target.value)}
         />
-      </div>
 
-      <button onClick={handleEnviarDatos}>Enviar datos</button>
+        <button type="button" onClick={handleConfirmarEnvio}>Enviar datos</button>
+
+        {mensaje && <p className="mensaje">{mensaje}</p>}
+      </form>
+
+      {mostrarConfirmacion && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Confirmar Envío</h2>
+            <p>Planta de: {plantas.find(planta => planta.id_planta == idPlanta)?.alumno_asignado}</p>
+            <p>Planta: {idPlanta}</p>
+            <p>Altura de crecimiento: {alturaCrecimiento} cm</p>
+            <p>Temperatura ambiente: {tempAmbiente} °C</p>
+            <p>Caudal de agua: {caudalAgua} ml/h</p>
+            <p>pH: {ph}</p>
+            <p>Humedad: {humedad} %</p>
+            <button onClick={handleEnviarDatos}>Confirmar</button>
+            <button onClick={handleCancelarEnvio}>Cancelar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

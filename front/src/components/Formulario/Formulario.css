@@ -1,19 +1,101 @@
-.Formulario-container {
-    height: 40%;
-    width: 30%;
-    outline: solid 1px black;
-    border-radius: 6px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
+.contact-form {
+    background-color: #212121;
+    padding: 20px 30px;
+    border-radius: 10px;
+    width: 25%;
 }
 
-.input {
+.contact-form .heading {
+    font-size: 24px;
+    color: #f2f2f2;
+    margin-bottom: 12px;
+    font-weight: bold;
+    display: block;
+}
+
+.contact-form form {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
+
+.contact-form label {
+    margin-bottom: 10px;
+}
+
+textarea {
+    resize: none;
+    height: 80px;
+    width: 200px;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+    padding: 10px;
+    outline: 1px solid #f2f2f2;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #212121;
+    color: #f2f2f2;
+}
+
+.contact-form textarea {
+    align-self: center;
+    width: 95%;
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+    outline: none;
+    box-shadow: 0 0 5px #f2f2f2;
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+.contact-form button[type="button"] {
+    background-color: #f2f2f2;
+    color: #212121;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.contact-form button[type="button"]:hover {
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.contact-form input[type="number"]::-webkit-outer-spin-button,
+.contact-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.contact-form input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.error {
+    color: rgb(201, 10, 10);
+    font-size: small;
+}
+
+.mensaje {
+    margin: 20px 0 0 0;
+    text-align: center;
+}
+
+@media only screen and (max-width: 768px) {
+    .contact-form {
+        background-color: #212121;
+        padding: 20px 30px;
+        border-radius: 10px;
+        width: 75%;
+    }
+  }
