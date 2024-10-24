@@ -7,12 +7,14 @@ export default function Formulario() {
   const [tempAmbiente, setTempAmbiente] = useState("");
   const [caudalAgua, setCaudalAgua] = useState("");
   const [ph, setPh] = useState("");
-  const [humedad, setHumedad] = useState("");
+  const [humedadAmbiente, setHumedadAmbiente] = useState("");
+  const [humedadSuelo, setHumedadSuelo] = useState("");
   const [observaciones, setObservaciones] = useState("");
   const [plantas, setPlantas] = useState([]);
   const [mensaje, setMensaje] = useState(null);
   const [errores, setErrores] = useState({});
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
     fetch("http://192.168.1.16:3000/plantas")
@@ -43,8 +45,11 @@ export default function Formulario() {
     if (!ph || ph < 0 || ph > 14) {
       nuevosErrores.ph = "Debe estar entre 0 y 14.";
     }
-    if (!humedad || humedad < 0 || humedad > 100) {
-      nuevosErrores.humedad = "Debe estar entre 0% y 100%.";
+    if (!humedadAmbiente || humedadAmbiente < 0 || humedadAmbiente > 100) {
+      nuevosErrores.humedadAmbiente = "Debe estar entre 0% y 100%.";
+    }
+    if (!humedadSuelo || humedadSuelo < 0 || humedadSuelo > 100) {
+      nuevosErrores.humedadSuelo = "Debe estar entre 0% y 100%.";
     }
 
     setErrores(nuevosErrores);
@@ -53,20 +58,23 @@ export default function Formulario() {
 
   const handleConfirmarEnvio = () => {
     if (validarFormulario()) {
-      setMostrarConfirmacion(true); // Mostrar el modal si la validación es exitosa
+      setMostrarConfirmacion(true);
     } else {
       setMensaje("Hay errores en el formulario.");
     }
   };
 
   const handleEnviarDatos = () => {
+    setEnviando(true);
+
     const datosPlanta = {
       idPlanta,
       alturaCrecimiento,
       tempAmbiente,
       caudalAgua,
       ph,
-      humedad,
+      humedadAmbiente,
+      humedadSuelo,
       observaciones,
     };
 
@@ -86,13 +94,17 @@ export default function Formulario() {
         setTempAmbiente("");
         setCaudalAgua("");
         setPh("");
-        setHumedad("");
+        setHumedadAmbiente("");
+        setHumedadSuelo("");
         setObservaciones("");
         setMostrarConfirmacion(false);
       })
       .catch((error) => {
         console.error("Error:", error);
         setMensaje("Error al enviar los datos");
+      })
+      .finally(() => {
+        setEnviando(false);
       });
   };
 
@@ -147,12 +159,20 @@ export default function Formulario() {
           onChange={(event) => setPh(event.target.value)}
         />
 
-        <label htmlFor="humedad">Humedad (%): {errores.humedad && <p className="error">{errores.humedad}</p>}</label>
+        <label htmlFor="humedadAmbiente">Humedad ambiente (%): {errores.humedadAmbiente && <p className="error">{errores.humedadAmbiente}</p>}</label>
         <input
           type="number"
-          value={humedad}
+          value={humedadAmbiente}
+          placeholder="Ingrese la humedad ambiente"
+          onChange={(event) => setHumedadAmbiente(event.target.value)}
+        />
+
+        <label htmlFor="humedadSuelo">Humedad del suelo (%): {errores.humedadSuelo && <p className="error">{errores.humedadSuelo}</p>}</label>
+        <input
+          type="number"
+          value={humedadSuelo}
           placeholder="Ingrese la humedad del suelo"
-          onChange={(event) => setHumedad(event.target.value)}
+          onChange={(event) => setHumedadSuelo(event.target.value)}
         />
 
         <label htmlFor="observaciones">Observaciones (opcional):</label>
@@ -171,13 +191,18 @@ export default function Formulario() {
           <div className="modal-content">
             <h2>Confirmar Envío</h2>
             <p>Planta de: {plantas.find(planta => planta.id_planta == idPlanta)?.alumno_asignado}</p>
-            <p>Planta: {idPlanta}</p>
             <p>Altura de crecimiento: {alturaCrecimiento} cm</p>
             <p>Temperatura ambiente: {tempAmbiente} °C</p>
             <p>Caudal de agua: {caudalAgua} ml/h</p>
             <p>pH: {ph}</p>
-            <p>Humedad: {humedad} %</p>
-            <button onClick={handleEnviarDatos}>Confirmar</button>
+            <p>Humedad ambiente: {humedadAmbiente} %</p>
+            <p>Humedad del suelo: {humedadSuelo} %</p>
+            <button
+              onClick={handleEnviarDatos}
+              disabled={enviando}
+            >
+              {enviando ? "Enviando..." : "Confirmar"}
+            </button>
             <button onClick={handleCancelarEnvio}>Cancelar</button>
           </div>
         </div>
